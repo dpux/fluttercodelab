@@ -10,9 +10,16 @@ class ChatScreen extends StatefulWidget {
   _ChatScreenState createState() => _ChatScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen> {
+class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin{
   final _textController = TextEditingController();
   final List<ChatMessage> _messages = <ChatMessage>[];
+
+  @override
+  void dispose() {        //only available in stateful
+    for (ChatMessage message in _messages)
+      message.animationController.dispose();
+    super.dispose();
+  }
 
   _buildTextComposer() {
     return IconTheme(
@@ -21,7 +28,7 @@ class _ChatScreenState extends State<ChatScreen> {
         margin: EdgeInsets.symmetric(horizontal: 8.0),
         child: Row(
           children: <Widget>[
-            Expanded(
+            Flexible(
               child: TextField(
                 controller: _textController,
                 onSubmitted: _handleSubmitted,
@@ -70,10 +77,17 @@ class _ChatScreenState extends State<ChatScreen> {
 
   void _handleSubmitted(String value) {
     print(value);
-    var msg = ChatMessage(text: value); //can'd do const!
+    _textController.clear();
+    var msg = ChatMessage(   //can'd do const msg!
+        text: value,
+        animationController: AnimationController(
+          duration: Duration(milliseconds: 1000),
+          vsync: this
+        ),
+    );
     setState(() {
       _messages.insert(0, msg);
     });
-    _textController.clear();
+    msg.animationController.forward();
   }
 }
