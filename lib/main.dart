@@ -1,4 +1,5 @@
 import 'package:codelabfirstapp/friendlyapp/friendly_app.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
 
@@ -19,6 +20,8 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+isiOS(context) => Theme.of(context).platform == TargetPlatform.iOS;
 
 class RandomWordsState extends State<RandomWords> {
   final List<WordPair> _suggestions = <WordPair>[];

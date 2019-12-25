@@ -1,4 +1,6 @@
 import 'package:codelabfirstapp/friendlyapp/chat_message.dart';
+import 'package:codelabfirstapp/main.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -10,13 +12,14 @@ class ChatScreen extends StatefulWidget {
   _ChatScreenState createState() => _ChatScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin{
+class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
   final _textController = TextEditingController();
   final List<ChatMessage> _messages = <ChatMessage>[];
   bool _isComposing = false;
 
   @override
-  void dispose() {        //only available in stateful
+  void dispose() {
+    //only available in stateful
     for (ChatMessage message in _messages)
       message.animationController.dispose();
     super.dispose();
@@ -33,7 +36,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin{
               child: TextField(
                 controller: _textController,
                 onSubmitted: _handleSubmitted,
-                onChanged: (value){
+                onChanged: (value) {
                   setState(() {
                     _isComposing = value.trim().isNotEmpty;
                   });
@@ -42,10 +45,19 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin{
                     InputDecoration.collapsed(hintText: 'Send a message'),
               ),
             ),
-            IconButton(
-              icon: Icon(Icons.send),
-              onPressed: () => _isComposing ? _handleSubmitted(_textController.text) : null,
-            )
+            isiOS(context)
+                ? CupertinoButton(
+                    child: Text('Send'),
+                    onPressed: () => _isComposing
+                        ? _handleSubmitted(_textController.text)
+                        : null,
+                  )
+                : IconButton(
+                    icon: Icon(Icons.send),
+                    onPressed: () => _isComposing
+                        ? _handleSubmitted(_textController.text)
+                        : null,
+                  )
           ],
         ),
       ),
@@ -57,6 +69,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin{
     return Scaffold(
       appBar: AppBar(
         title: Text('Friendly Chat'),
+        elevation: isiOS(context) ? 0.0 : 4.0,
       ),
       body: Column(
         children: <Widget>[
@@ -85,12 +98,11 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin{
     print(value);
     _textController.clear();
 
-    var msg = ChatMessage(   //can'd do const msg!
-        text: value,
-        animationController: AnimationController(
-          duration: Duration(milliseconds: 1000),
-          vsync: this
-        ),
+    var msg = ChatMessage(
+      //can'd do const msg!
+      text: value,
+      animationController: AnimationController(
+          duration: Duration(milliseconds: 1000), vsync: this),
     );
     setState(() {
       _isComposing = false;
