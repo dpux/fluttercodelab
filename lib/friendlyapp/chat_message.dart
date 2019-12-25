@@ -28,13 +28,15 @@ class ChatMessage extends StatelessWidget {
               child: Text(_name[0]),
             ),
             SizedBox(width: 8.0,),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(_name, style: Theme.of(context).textTheme.subhead),
-                SizedBox(height: 5.0,),
-                Text(text),
-              ],
+            Flexible(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(_name, style: Theme.of(context).textTheme.subhead),
+                  SizedBox(height: 5.0,),
+                  Text(text),
+                ],
+              ),
             )
           ],
         ),
